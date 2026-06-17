@@ -138,16 +138,22 @@ const TabButton = styled.button`
   -webkit-tap-highlight-color: transparent;
   touch-action: none;
 
-  color: var(--c-content);
-  transition: color 160ms ease;
+  color: ${({ $active }) => ($active ? 'var(--c-action)' : 'var(--c-content)')};
+  transition: color 200ms ease;
 
-  &:hover {
-    color: var(--c-action);
-    cursor: pointer;
-  }
+  /* :hover só se aplica a mouse real — em touch ele "trava" durante o
+     drag porque o Track captura o ponteiro (setPointerCapture) e os
+     botões deixam de receber mouseover/mouseout enquanto o dedo
+     arrasta. A cor de seleção real vem da prop $active acima. */
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: var(--c-action);
+      cursor: pointer;
+    }
 
-  &:hover svg {
-    scale: 1.15;
+    &:hover svg {
+      scale: 1.15;
+    }
   }
 
   &:active {
@@ -234,6 +240,8 @@ const BottomNav = ({ currentScreen, onScreenChange }) => {
   const indexFromLeftPercent = (leftPercent) =>
     clamp(Math.round(leftPercent / tabPercent), 0, tabCount - 1);
 
+  const liveIndex = isDragging ? indexFromLeftPercent(dragLeftPercent) : activeIndex;
+
   const handlePointerDown = (event) => {
     const track = trackRef.current;
     if (!track) return;
@@ -294,6 +302,7 @@ const BottomNav = ({ currentScreen, onScreenChange }) => {
           <TabButton
             key={tab.id}
             type="button"
+            $active={index === liveIndex}
             aria-current={index === activeIndex ? 'page' : undefined}
             onClick={() => onScreenChange(tab.id)}
           >
