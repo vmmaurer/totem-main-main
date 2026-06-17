@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 /* ----------------------------------------------------------------
-   Liquid glass bottom nav — versão estável.
+   Liquid glass bottom nav — versão estável, escala 1.5x.
 
    Por que o feDisplacementMap saiu:
    - O mapa de deslocamento original foi feito para outra proporção
@@ -20,6 +20,9 @@ import styled from 'styled-components';
      simulam a luz "pegando" no vidro, sem distorcer nada.
    - o "blob" ativo com spring (cubic-bezier com overshoot) pra dar
      a sensação de elástico/líquido ao snapar na aba.
+
+   Cor de seleção: controlada só por $active (JS), nunca por :hover —
+   ver TabButton para o porquê (pointer capture + drag bugavam o hover).
 ------------------------------------------------------------------ */
 
 const Nav = styled.nav`
@@ -33,32 +36,32 @@ const Nav = styled.nav`
   --saturation: 180%;
 
   position: fixed;
-  bottom: clamp(24px, 4vh, 48px);
+  bottom: clamp(36px, 4vh, 72px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   display: flex;
   box-sizing: border-box;
-  width: min(92vw, 400px);
-  padding: 10px 12px;
+  width: min(92vw, 600px);
+  padding: 15px 18px;
   border-radius: 99em;
   isolation: isolate;
 
   background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
-  backdrop-filter: blur(18px) saturate(var(--saturation)) brightness(1.05);
-  -webkit-backdrop-filter: blur(18px) saturate(var(--saturation)) brightness(1.05);
+  backdrop-filter: blur(27px) saturate(var(--saturation)) brightness(1.05);
+  -webkit-backdrop-filter: blur(27px) saturate(var(--saturation)) brightness(1.05);
 
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
-    inset 1.8px 3px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
-    inset -2px -2px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
-    inset -3px -8px 1px -6px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
-    inset -0.3px -1px 4px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 12%), transparent),
-    inset -1.5px 2.5px 0px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
-    inset 0px 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
-    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
-    0px 1px 5px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
-    0px 6px 16px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+    inset 0 0 0 1.5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 2.7px 4.5px 0px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -3px -3px 0px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -4.5px -12px 1.5px -9px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -0.45px -1.5px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 12%), transparent),
+    inset -2.25px 3.75px 0px -3px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0px 4.5px 6px -3px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 3px -9.75px 1.5px -6px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0px 1.5px 7.5px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0px 9px 24px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
 
   /* sheen no topo — simula a luz passando pelo vidro, sem distorcer nada */
   &::before {
@@ -100,13 +103,13 @@ const Highlight = styled.div`
 
   background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
-    inset 2px 1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
-    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
-    inset -2px -6px 1px -5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
-    inset -1px 2px 3px -1px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
-    inset 0px -4px 1px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
-    0px 3px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+    inset 0 0 0 1.5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 3px 1.5px 0px -1.5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2.25px -1.5px 0px -1.5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -3px -9px 1.5px -7.5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -1.5px 3px 4.5px -1.5px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0px -6px 1.5px -3px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0px 4.5px 9px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
 
   will-change: left, scale;
   scale: ${({ $dragging }) => ($dragging ? '1.04' : '1')};
@@ -128,9 +131,9 @@ const TabButton = styled.button`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  min-height: 60px;
-  padding: 10px 6px;
+  gap: 6px;
+  min-height: 90px;
+  padding: 15px 9px;
   border: none;
   border-radius: 99em;
   background: transparent;
@@ -142,10 +145,12 @@ const TabButton = styled.button`
   transition: color 200ms ease;
 
   /* :hover de cor removido de propósito: com setPointerCapture ativo
-     no Track (necessário pro drag), o Chrome calcula :hover com base
-     no elemento que capturou o ponteiro, não no que está sob o
-     cursor — isso fazia o botão onde o arraste começou ficar "preso"
-     em azul. A cor de seleção real vem só da prop $active acima. */
+     no Track (necessário pro drag), o navegador calcula :hover com
+     base no elemento que capturou o ponteiro, não no que está sob o
+     cursor/dedo — isso fazia o botão onde o arraste começou ficar
+     "preso" em azul (acontece até em touch, pois muitos totens
+     reportam hover:hover mesmo sem mouse). A cor de seleção real
+     vem só da prop $active acima. */
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       cursor: pointer;
@@ -157,19 +162,19 @@ const TabButton = styled.button`
   }
 
   &:focus-visible {
-    outline: 2px solid var(--c-content);
-    outline-offset: 3px;
+    outline: 3px solid var(--c-content);
+    outline-offset: 4.5px;
   }
 
   svg {
-    width: 26px;
-    height: 26px;
+    width: 39px;
+    height: 39px;
     fill: currentColor;
     transition: scale 200ms cubic-bezier(0.5, 0, 0, 1);
   }
 
   span {
-    font-size: 11px;
+    font-size: 16.5px;
     font-weight: 600;
     letter-spacing: 0.01em;
     line-height: 1;
