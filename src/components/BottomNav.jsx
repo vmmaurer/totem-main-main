@@ -141,18 +141,14 @@ const TabButton = styled.button`
   color: ${({ $active }) => ($active ? 'var(--c-action)' : 'var(--c-content)')};
   transition: color 200ms ease;
 
-  /* :hover só se aplica a mouse real — em touch ele "trava" durante o
-     drag porque o Track captura o ponteiro (setPointerCapture) e os
-     botões deixam de receber mouseover/mouseout enquanto o dedo
-     arrasta. A cor de seleção real vem da prop $active acima. */
+  /* :hover de cor removido de propósito: com setPointerCapture ativo
+     no Track (necessário pro drag), o Chrome calcula :hover com base
+     no elemento que capturou o ponteiro, não no que está sob o
+     cursor — isso fazia o botão onde o arraste começou ficar "preso"
+     em azul. A cor de seleção real vem só da prop $active acima. */
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      color: var(--c-action);
       cursor: pointer;
-    }
-
-    &:hover svg {
-      scale: 1.15;
     }
   }
 
