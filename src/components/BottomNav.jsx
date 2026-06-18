@@ -42,8 +42,8 @@ const Nav = styled.nav`
   z-index: 1000;
   display: flex;
   box-sizing: border-box;
-  width: min(92vw, 600px);
-  padding: 15px 18px;
+  width: min(92vw, 660px);
+  padding: 16.5px 19.8px;
   border-radius: 99em;
   isolation: isolate;
 
@@ -131,9 +131,9 @@ const TabButton = styled.button`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 90px;
-  padding: 15px 9px;
+  gap: 6.6px;
+  min-height: 99px;
+  padding: 16.5px 9.9px;
   border: none;
   border-radius: 99em;
   background: transparent;
@@ -167,14 +167,14 @@ const TabButton = styled.button`
   }
 
   svg {
-    width: 39px;
-    height: 39px;
+    width: 43px;
+    height: 43px;
     fill: currentColor;
     transition: scale 200ms cubic-bezier(0.5, 0, 0, 1);
   }
 
   span {
-    font-size: 16.5px;
+    font-size: 18.15px;
     font-weight: 600;
     letter-spacing: 0.01em;
     line-height: 1;
