@@ -69,9 +69,7 @@
   width: auto;
   display: block;
   margin: 0 auto;
-  .hero-logo {
   mix-blend-mode: screen;
-}
 }
 
 .carousel-wrapper {
