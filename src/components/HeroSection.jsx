@@ -11,7 +11,7 @@ const HeroSection = () => {
     <section className="hero-section">
       <div className="grid-overlay" />
       <div className="hero-content">
-        <img className="hero-logo" src="/images/logonavbar.png" alt="Logo" style={{ opacity: 0.2 }}/>
+        <img className="hero-logo" src="/images/logonavbar.png" alt="Logo"/>
       </div>
       <div className="carousel-wrapper">
         <ArcCarousel items={products} onCardTap={setActiveProduct} />
