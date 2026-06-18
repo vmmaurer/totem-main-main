@@ -315,11 +315,14 @@ export default function LinhaDoTempo() {
 
       <section style={{
         position: 'relative',
-        padding: '80px 0 60px',
+        padding: '24px 0 40px',
         background: 'transparent',
         overflow: 'hidden',
         width: '100%',
+        height: '100%',
         boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
       }}>
         {/* Glow */}
         <div style={{
@@ -329,8 +332,8 @@ export default function LinhaDoTempo() {
           pointerEvents: 'none',
         }} />
 
-        {/* Cabeçalho */}
-        <div style={{ textAlign: 'center', marginBottom: 60, position: 'relative', zIndex: 10 }}>
+        {/* Cabeçalho — fica perto do topo, não no meio do espaço livre */}
+        <div style={{ textAlign: 'center', marginBottom: 40, position: 'relative', zIndex: 10, flexShrink: 0 }}>
           <p style={{ color: 'rgba(46,164,255,.85)', fontSize: 11, fontWeight: 700, letterSpacing: '.4em', textTransform: 'uppercase', margin: '0 0 12px' }}>
             Quem Somos?
           </p>
@@ -343,51 +346,44 @@ export default function LinhaDoTempo() {
           </p>
         </div>
 
-        {/* Carrossel */}
-        <div
-          style={{ position: 'relative', overflow: 'hidden', cursor: 'grab', width: '100%' }}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onMouseLeave={onMouseUp}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-        >
-          {/* Linha horizontal */}
-          <div style={{
-            position: 'absolute', top: '50%', left: 0, right: 0,
-            height: 2, marginTop: -1,
-            background: 'rgba(46,164,255,.32)',
-            pointerEvents: 'none', zIndex: 0,
-          }} />
-
-          {/* Track */}
+        {/* Carrossel — centralizado no espaço restante (flex:1) */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', width: '100%' }}>
           <div
-            ref={trackRef}
-            style={{
-              position: 'relative', zIndex: 1,
-              display: 'inline-flex', alignItems: 'center',
-              gap: 0, willChange: 'transform',
-              padding: '20px 0',
-            }}
+            style={{ position: 'relative', overflow: 'hidden', cursor: 'grab', width: '100%' }}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseUp}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
           >
-            {items.map((item, i) => (
-              <div key={i} style={{ margin: `0 ${CARD_GAP / 2}px` }}>
-                <Card item={item} index={i} onOpen={() => openCard(i)} />
-              </div>
-            ))}
+            {/* Linha horizontal--- */}
+            <div style={{
+              position: 'absolute', top: '50%', left: 0, right: 0,
+              height: 2, marginTop: -1,
+              background: 'rgba(46,164,255,.32)',
+              pointerEvents: 'none', zIndex: 0,
+            }} />
+
+            {/* Track */}
+            <div
+              ref={trackRef}
+              style={{
+                position: 'relative', zIndex: 1,
+                display: 'inline-flex', alignItems: 'center',
+                gap: 0, willChange: 'transform',
+                padding: '20px 0',
+              }}
+            >
+              {items.map((item, i) => (
+                <div key={i} style={{ margin: `0 ${CARD_GAP / 2}px` }}>
+                  <Card item={item} index={i} onOpen={() => openCard(i)} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Fades laterais */}
-        {[['left', '90deg'], ['right', '270deg']].map(([side, deg]) => (
-          <div key={side} style={{
-            position: 'absolute', top: 0, [side]: 0, bottom: 0, width: 80,
-            background: `linear-gradient(${deg}, rgba(4,11,25,0.9) 0%, transparent 100%)`,
-            pointerEvents: 'none', zIndex: 20,
-          }} />
-        ))}
       </section>
     </>
   )
