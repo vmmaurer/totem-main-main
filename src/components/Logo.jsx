@@ -2,11 +2,12 @@ import React from 'react'
 
 export default function Logo({ size = 'md', light = true }) {
   const sizes = {
-    sm: { container: 'gap-2', icon: 36, titleSize: 'text-lg', subtitleSize: 'text-[10px]' },
-    md: { container: 'gap-3', icon: 48, titleSize: 'text-2xl', subtitleSize: 'text-xs' },
-    lg: { container: 'gap-4', icon: 64, titleSize: 'text-4xl', subtitleSize: 'text-sm' },
-    xl: { container: 'gap-5', icon: 88, titleSize: 'text-5xl', subtitleSize: 'text-base' },
+    sm: { container: 'gap-2', icon: 40, titleSize: 'text-xl', subtitleSize: 'text-xs' },
+    md: { container: 'gap-3', icon: 53, titleSize: 'text-3xl', subtitleSize: 'text-sm' },
+    lg: { container: 'gap-4', icon: 70, titleSize: 'text-5xl', subtitleSize: 'text-base' },
+    xl: { container: 'gap-5', icon: 97, titleSize: 'text-6xl', subtitleSize: 'text-lg' },
   }
+
   const s = sizes[size]
   const textColor = light ? 'text-white' : 'text-navy-900'
   const accentColor = light ? '#cf0f0f' : '#e01d1d'
