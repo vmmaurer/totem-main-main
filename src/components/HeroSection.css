@@ -65,10 +65,10 @@
 }
 
 .hero-logo {
-  height: 300px;
-  width: 600px;
-  display: block;
-  margin: 0 ;
+  height: 120%;
+  width: auto;
+  display: auto;
+  margin: 0 auto;
 }
 
 .carousel-wrapper {
