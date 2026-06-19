@@ -68,7 +68,7 @@
   width: auto;
   display: block;
   margin: 0 auto;
-  padding-top: clamp(36px, 4vh, 72px);
+  padding-top: 2cm;
 }
 
 .carousel-wrapper {
