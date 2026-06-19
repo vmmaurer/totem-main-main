@@ -6,6 +6,7 @@ export default function ArcCarousel({ items, onCardTap }) {
   const [dragOffset, setDragOffset] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isPortraitKiosk, setIsPortraitKiosk] = useState(false)
 
   const dragOffsetRef = useRef(0)
   const touchStartX = useRef(null)
@@ -16,12 +17,18 @@ export default function ArcCarousel({ items, onCardTap }) {
   const containerRef = useRef(null)
   const count = items.length
 
-   // Detecta mobile
+   // Detecta mobile e tela retrato alta (totem 1080x1920)
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    const checkScreen = () => {
+      const w = window.innerWidth
+      const h = window.innerHeight
+      setIsMobile(w < 768)
+      // Totem retrato: altura maior que largura E largura razoável
+      setIsPortraitKiosk(h > w && w >= 768)
+    }
+    checkScreen()
+    window.addEventListener('resize', checkScreen)
+    return () => window.removeEventListener('resize', checkScreen)
   }, [])
 
   // Auto-rotate
@@ -129,6 +136,15 @@ export default function ArcCarousel({ items, onCardTap }) {
     }
   }
 
+  // Tamanho dos cards
+  const CARD_W = isMobile ? 320 : isPortraitKiosk ? 560 : 360
+  const CARD_H = isMobile ? 460 : isPortraitKiosk ? 820 : 520
+
+  // Raio do arco: aumenta junto com o card para o espaçamento ficar proporcional
+  const ARC_RADIUS = isPortraitKiosk ? 1000 : 700
+  // Ângulo entre cards
+  const CARD_ANGLE = isPortraitKiosk ? 30 : 35
+
   // Calculate card positions (arc layout)
   const getCardStyle = (index) => {
     const total = count
@@ -139,14 +155,14 @@ export default function ArcCarousel({ items, onCardTap }) {
     if (diff < -total / 2) diff += total
 
     // Apply drag offset in angle
-    const dragAngle = (dragOffset / 400) * 35
-    const angle = diff * 35 + dragAngle
+    const dragAngle = (dragOffset / 400) * CARD_ANGLE
+    const angle = diff * CARD_ANGLE + dragAngle
 
     // Max visible range ±2 cards on each side
     const visible = Math.abs(diff) <= 3
 
     const rad = (angle * Math.PI) / 180
-    const radius = 700 // arc radius in px
+    const radius = ARC_RADIUS // arc radius in px
     const x = radius * Math.sin(rad)
     const z = radius * (Math.cos(rad) - 1) // negative = goes back
 
@@ -164,9 +180,6 @@ export default function ArcCarousel({ items, onCardTap }) {
         : 'transform 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease',
     }
   }
-
-  const CARD_W = isMobile ? 320 : 360
-  const CARD_H = isMobile ? 460 : 520
 
   return (
     <div className="relative w-full select-none" style={{ height: `${CARD_H + 120}px` }}>
@@ -260,22 +273,34 @@ export default function ArcCarousel({ items, onCardTap }) {
                     <div className="w-1.5 h-1.5 rounded-full bg-glass-300" />
                     Soluções em Vidro
                   </div>
-                  <h3 className="text-white font-display text-2xl font-bold leading-tight mb-1">
+                  <h3
+                    className="text-white font-display font-bold leading-tight mb-1"
+                    style={{ fontSize: isPortraitKiosk ? '2.5rem' : '1.5rem' }}
+                  >
                     {item.title}
                   </h3>
-                  <p className="text-white/60 text-sm font-medium mb-4">
+                  <p
+                    className="text-white/60 font-medium mb-4"
+                    style={{ fontSize: isPortraitKiosk ? '1.25rem' : '0.875rem' }}
+                  >
                     {item.subtitle}
                   </p>
 
                   {/* Tap indicator — only on active card */}
                   {isActive && (
                     <div
-                      className="flex items-center gap-2 text-glass-300 text-xs font-medium"
+                      className="flex items-center gap-2 text-glass-300 font-medium"
                       style={{
                         animation: 'pulseOpacity 2.5s ease-in-out infinite',
+                        fontSize: isPortraitKiosk ? '1rem' : '0.75rem',
                       }}
                     >
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <svg
+                        width={isPortraitKiosk ? 22 : 16}
+                        height={isPortraitKiosk ? 22 : 16}
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
                         <path d="M8 2V8L11 11" stroke="#75c2ff" strokeWidth="1.5" strokeLinecap="round"/>
                         <circle cx="8" cy="8" r="6.5" stroke="#75c2ff" strokeWidth="1.5" opacity="0.5"/>
                       </svg>
@@ -301,22 +326,32 @@ export default function ArcCarousel({ items, onCardTap }) {
 
       {/* Nav arrows */}
       <button
-        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 touch-target flex items-center justify-center w-14 h-14 rounded-full"
-        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)' }}
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 touch-target flex items-center justify-center rounded-full"
+        style={{
+          background: 'rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255,255,255,0.18)',
+          width: isPortraitKiosk ? 72 : 56,
+          height: isPortraitKiosk ? 72 : 56,
+        }}
         onPointerDown={(e) => { e.stopPropagation(); goPrev() }}
         aria-label="Anterior"
       >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <svg width={isPortraitKiosk ? 28 : 20} height={isPortraitKiosk ? 28 : 20} viewBox="0 0 20 20" fill="none">
           <path d="M13 4L7 10L13 16" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
       <button
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 touch-target flex items-center justify-center w-14 h-14 rounded-full"
-        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)' }}
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 touch-target flex items-center justify-center rounded-full"
+        style={{
+          background: 'rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255,255,255,0.18)',
+          width: isPortraitKiosk ? 72 : 56,
+          height: isPortraitKiosk ? 72 : 56,
+        }}
         onPointerDown={(e) => { e.stopPropagation(); goNext() }}
         aria-label="Próximo"
       >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <svg width={isPortraitKiosk ? 28 : 20} height={isPortraitKiosk ? 28 : 20} viewBox="0 0 20 20" fill="none">
           <path d="M7 4L13 10L7 16" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
