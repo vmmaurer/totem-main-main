@@ -1,6 +1,7 @@
 .hero-section {
   position: relative;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,6 +9,7 @@
   background: linear-gradient(180deg, #040b19 0%, #405b7a 50%, #040b19 100%);
   overflow: hidden;
   padding: 0 2rem;
+  box-sizing: border-box;
 }
 
 .hero-section::before {
@@ -52,6 +54,8 @@
   z-index: 1;
 }
 
+/* Logo: fica no topo, com espaçamento fixo do topo da tela.
+   flex-shrink:0 garante que nunca encolha. */
 .hero-content {
   display: flex;
   flex-direction: column;
@@ -61,6 +65,8 @@
   z-index: 2;
   width: 100%;
   max-width: 1200px;
+  flex-shrink: 0;
+  padding-top: 60px;
 }
 
 .hero-logo {
@@ -68,9 +74,13 @@
   width: auto;
   display: block;
   margin: 0 auto;
-  padding-top: 60px;
 }
 
+/* Carrossel: ocupa TODO o espaço restante entre a logo e o
+   rodapé (BottomNav), e centraliza seu conteúdo nesse espaço.
+   Como flex:1 pega tudo que sobra e align/justify center
+   centralizam dentro dele, o espaçamento acima e abaixo do
+   carrossel fica igual automaticamente. */
 .carousel-wrapper {
   flex: 1;
   display: flex;
@@ -79,4 +89,8 @@
   width: 100%;
   position: relative;
   z-index: 2;
+  /* padding inferior reserva espaço para o BottomNav fixo,
+     mantendo o respiro de baixo igual ao de cima */
+  padding-bottom: 120px;
+  min-height: 0;
 }
