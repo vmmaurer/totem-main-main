@@ -65,9 +65,9 @@
 }
 
 .hero-logo {
-  height: 120%;
+  height: 300px;
   width: auto;
-  display: auto;
+  display: block;
   margin: 0 auto;
 }
 
