@@ -165,8 +165,8 @@ export default function ArcCarousel({ items, onCardTap }) {
     }
   }
 
-  const CARD_W = isMobile ? 280 : 320
-  const CARD_H = isMobile ? 400 : 460
+  const CARD_W = isMobile ? 320 : 360
+  const CARD_H = isMobile ? 460 : 520
 
   return (
     <div className="relative w-full select-none" style={{ height: `${CARD_H + 120}px` }}>
